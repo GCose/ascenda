@@ -92,7 +92,7 @@ function initChallengesAnimation() {
 let promiseSection, videoStage, journey, scene, contentPoints;
 let isJourneyActive = false;
 let isPromiseCompleted = false;
-let lastScrollDirection = null;
+let isPromiseFixed = false;
 
 function initPromiseSection() {
   promiseSection = document.querySelector(".promise");
@@ -119,46 +119,33 @@ function initPromiseSection() {
 function updatePromiseScrollEffects() {
   if (!promiseSection) return;
 
-  const rect = promiseSection.getBoundingClientRect();
-  const sectionTop = rect.top;
-  const sectionHeight = rect.height;
+  const scrollTop = window.pageYOffset;
   const viewportHeight = window.innerHeight;
+
+  const sectionTop = promiseSection.offsetTop;
+  const sectionHeight = promiseSection.offsetHeight;
+  const sectionEnd = sectionTop + sectionHeight - viewportHeight;
 
   // Calculate scroll progress within the Promise section
   const scrollProgress = Math.max(
     0,
     Math.min(
       1,
-      (viewportHeight - sectionTop) / (viewportHeight + sectionHeight)
+      (viewportHeight - (sectionTop - scrollTop)) / (viewportHeight + sectionHeight)
     )
   );
 
-  // Determine scroll direction
-  const currentScrollY = window.pageYOffset;
-  const scrollDirection =
-    currentScrollY > (updatePromiseScrollEffects.lastScrollY || 0)
-      ? "down"
-      : "up";
-  updatePromiseScrollEffects.lastScrollY = currentScrollY;
-
-  // Check if we're beyond the Promise section
-  const isAfterSection = sectionTop + sectionHeight < viewportHeight;
-  const isBeforeSection = sectionTop > viewportHeight;
-
-  console.log("=== DEBUG ===");
-  console.log("sectionTop:", sectionTop);
-  console.log("sectionHeight:", sectionHeight);
-  console.log("viewportHeight:", viewportHeight);
-  console.log("scrollProgress:", scrollProgress);
-  console.log("isBeforeSection:", isBeforeSection);
-  console.log("isAfterSection:", isAfterSection);
-  console.log("=============");
+  // Check section states
+  const isBeforeSection = scrollTop < sectionTop;
+  const isInSection = scrollTop >= sectionTop && scrollTop <= sectionEnd;
+  const isAfterSection = scrollTop > sectionEnd;
 
   // State 1: Before Promise Section
   if (isBeforeSection) {
-    if (isPromiseCompleted) {
+    if (isPromiseCompleted || isPromiseFixed) {
       isPromiseCompleted = false;
-      promiseSection.classList.remove("completed", "exiting");
+      isPromiseFixed = false;
+      promiseSection.classList.remove("completed", "is-fixed");
     }
 
     videoStage.classList.remove("visible");
@@ -172,43 +159,26 @@ function updatePromiseScrollEffects() {
     return;
   }
 
+  // State 2: In Promise Section
+  if (isInSection) {
+    if (isPromiseCompleted) {
+      isPromiseCompleted = false;
+      promiseSection.classList.remove("completed");
+    }
+
+    if (!isPromiseFixed) {
+      isPromiseFixed = true;
+      promiseSection.classList.add("is-fixed");
+    }
+  }
+
   // State 3: After Promise Section - Exit Strategy
   if (isAfterSection) {
-    if (!isPromiseCompleted) {
+    if (isPromiseFixed && !isPromiseCompleted) {
+      isPromiseFixed = false;
       isPromiseCompleted = true;
-
-      // Add exiting class for transition
-      promiseSection.classList.add("exiting");
-
-      // After transition completes, add completed class
-      setTimeout(() => {
-        promiseSection.classList.remove("exiting");
-        promiseSection.classList.add("completed");
-
-        // Ensure final state for fixed elements
-        videoStage.style.position = "absolute";
-        videoStage.style.top = "auto";
-        videoStage.style.bottom = "0";
-        videoStage.style.left = "0";
-        videoStage.style.transform = "none";
-        videoStage.style.width = "100%";
-        videoStage.style.height = "100vh";
-        videoStage.classList.add("visible");
-
-        journey.style.position = "absolute";
-        journey.style.top = "auto";
-        journey.style.bottom = "0";
-        journey.style.left = "0";
-        journey.style.width = "100%";
-        journey.style.height = "100vh";
-        journey.classList.add("active");
-
-        // Show final content state
-        contentPoints.forEach((point) => {
-          point.classList.add("active");
-          point.classList.remove("passed");
-        });
-      }, 800); // Match transition duration in CSS
+      promiseSection.classList.remove("is-fixed");
+      promiseSection.classList.add("completed");
     }
     return;
   }

@@ -82,7 +82,6 @@ body {
 .background__elements {
   top: 0;
   left: 0;
-  z-index: 1;
   width: 100%;
   height: 100vh;
   position: fixed;
@@ -237,6 +236,7 @@ body {
 
 /*========== Button Styles ==========*/
 .btn {
+  z-index: 200;
   font-weight: 700;
   overflow: hidden;
   position: relative;
@@ -252,7 +252,6 @@ body {
 }
 
 .btn span {
-  z-index: 2;
   position: relative;
 }
 
@@ -383,6 +382,7 @@ body {
  * HERO STYLES
  ==============*/
 .hero {
+  z-index: 2;
   overflow: hidden;
   position: relative;
 }
@@ -484,7 +484,7 @@ body {
 
 .hero__promise {
   opacity: 0;
-  font-weight: 500;
+  font-weight: 800;
   text-align: center;
   margin: 0 auto 3rem;
   transform: translateY(30px);
@@ -498,7 +498,6 @@ body {
 /*========== Hero Cta Styles ==========*/
 .hero__cta {
   opacity: 0;
-  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -513,7 +512,7 @@ body {
 .hero__scroll-indicator {
   left: 50%;
   opacity: 0;
-  z-index: 10;
+  z-index: 1;
   position: fixed;
   transform: translateX(-50%);
   bottom: clamp(2rem, 5vw, 4rem);
@@ -813,6 +812,12 @@ body {
   position: relative;
 }
 
+.promise__spacer {
+  width: 100%;
+  min-height: 400vh;
+  position: relative;
+}
+
 /*========== Promise Header Styles ==========*/
 .promise__header {
   top: 0;
@@ -836,17 +841,19 @@ body {
   width: 100vw;
   height: 100vh;
   position: fixed;
+  pointer-events: none;
   transform-origin: center center;
   transform: translate(-50%, -50%) scale(0.4);
   transition: transform 0.1s ease-out, opacity 0.3s ease;
 }
 
-.promise__video-stage.visible {
-  opacity: 1;
+.promise.is-fixed .promise__video-stage {
+  position: fixed;
+  transition: transform 0.05s ease-out;
 }
 
-.promise__video-stage.exiting {
-  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+.promise__video-stage.visible {
+  opacity: 1;
 }
 
 .promise__video {
@@ -865,7 +872,12 @@ body {
   width: 100vw;
   height: 100vh;
   position: fixed;
+  pointer-events: none;
   transition: opacity 0.5s ease;
+}
+
+.promise.is-fixed .promise__journey {
+  position: fixed;
 }
 
 .promise__journey.active {
@@ -983,9 +995,10 @@ body {
   left: 0 !important;
   bottom: 0 !important;
   position: absolute !important;
+  transform: none !important;
   width: 100% !important;
   height: 100vh !important;
-  opacity: 1 !important;
+  opacity: 0 !important;
   z-index: 50 !important;
 }
 
