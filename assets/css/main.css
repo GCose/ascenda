@@ -844,8 +844,7 @@ body {
   pointer-events: none;
   transform-origin: center center;
   transform: translate(-50%, -50%) scale(0.4);
-  transition: transform 1.2s ease-out, opacity 0.3s ease, top 1.2s ease-out,
-    bottom 1.2s ease-out, left 1.2s ease-out, position 0s linear;
+  transition: none;
 }
 
 .promise.is-fixed .promise__video-stage {
@@ -873,8 +872,7 @@ body {
   height: 100vh;
   position: fixed;
   pointer-events: none;
-  transition: opacity 0.5s ease, top 1.2s ease-out, bottom 1.2s ease-out,
-    position 0s linear;
+  transition: none;
 }
 
 .promise.is-fixed .promise__journey {
@@ -989,7 +987,6 @@ body {
   height: 100vh !important;
   position: absolute !important;
   transform: translateX(-50%) !important;
-  transition: top 0.8s ease-out, transform 0.8s ease-out !important;
 }
 
 .promise.completed .promise__journey {
@@ -1002,7 +999,6 @@ body {
   height: 100vh !important;
   transform: none !important;
   position: absolute !important;
-  transition: top 1.2s ease-out, transform 1.2s ease-out !important;
 }
 
 /*========== Transition States ==========*/
