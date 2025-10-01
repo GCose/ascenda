@@ -185,26 +185,6 @@ function updatePromiseScrollEffects() {
 
   // State 2: In Promise Section - Active Scroll Effects
 
-  // Handle returning from completed state
-  if (isPromiseCompleted && scrollDirection === "up") {
-    isPromiseCompleted = false;
-    promiseSection.classList.remove("completed");
-
-    // Reset to fixed positioning
-    videoStage.style.position = "fixed";
-    videoStage.style.top = "50%";
-    videoStage.style.left = "50%";
-    videoStage.style.bottom = "auto";
-    videoStage.style.width = "100vw";
-    videoStage.style.height = "100vh";
-
-    journey.style.position = "fixed";
-    journey.style.top = "0";
-    journey.style.left = "0";
-    journey.style.bottom = "auto";
-    journey.style.width = "100vw";
-    journey.style.height = "100vh";
-  }
 
   // Show video at 15% into the section
   if (scrollProgress >= 0.15) {
